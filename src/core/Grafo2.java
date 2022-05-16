@@ -166,8 +166,11 @@ public class Grafo2 {
 			dVertices.put(u, vd);
 			q.add(u);
 		}
-		dVertices.get(r).custo = 0;
-
+		
+		if(dVertices.get(r) != null){
+			dVertices.get(r).custo = 0;
+		}
+		
 		while (q.isEmpty() == false) {
 			String min = this.getMin(q, dVertices);
 			q.remove(min);
@@ -205,7 +208,7 @@ public class Grafo2 {
 		/*
 	   * chama o mostra grafo 2 para exibir o grafo gerado pelo conjunto de antecessores gerado pel DFS 
 		 */
-		this.mostraGrafo1(gMST, "grafo MST");
+		this.mostraGrafo1(gMST, "grafo Prim");
 
 	}
 	
@@ -240,8 +243,6 @@ public class Grafo2 {
 		Collections.sort(listaEdge);
 
 		for(EdgeTypeKruskal edge : listaEdge){
-			System.out.println(edge.getOrigem() + " -> " + edge.getDestino() + " " + edge.getPeso());
-
 			if(dVertices.get(edge.getOrigem()).pred == null){
 				dVertices.get(edge.getOrigem()).pred = edge.getDestino();
 			} else if (dVertices.get(edge.getDestino()).pred == null){
@@ -273,13 +274,26 @@ public class Grafo2 {
 
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
+		ManipulationFile file = new ManipulationFile();
+		
+		file.generateCompleteFork(100);
+		
 		Grafo2 g = new Grafo2();
-		g.load("g4.txt");
+		g.load("data.txt");
 		g.mostraGrafo1(g.wg, "Grafo não direcionado");
+		
+		long tempInitPrim = System.currentTimeMillis();
+		g.prim(g.wg, "V1");
+		long tempPrim = System.currentTimeMillis() - tempInitPrim;
+
+		long tempInitkruskal = System.currentTimeMillis();
 		g.kruskal(g.wg);
-//		g.prim(g.wg, "A");
+		long tempkruskal = System.currentTimeMillis() - tempInitkruskal;
+
+		System.out.printf("O metodo Prim executou em: %d milisegundos\n", tempPrim);
+		System.out.printf("O metodo Kruskal executou em: %d milisegundos\n", tempkruskal);
 	}
 
 }
